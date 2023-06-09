@@ -1,11 +1,8 @@
 from text_analyzer import TextAnalyzer
 from neo4j import GraphDatabase
-import pandas as pd
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud
+from nltk_analyzer import NltkAnalyzer
 import json
 import time
-import re
 import os
 
 
@@ -13,6 +10,7 @@ class Neo4jForSearch(TextAnalyzer):
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.data = []
+        self.analyzer = NltkAnalyzer()
 
     def close(self):
         self.driver.close()
@@ -57,23 +55,22 @@ class Neo4jForSearch(TextAnalyzer):
             ''', keyword=keyword)
             print("Query time in Neo4j: %s seconds" %
                   (time.time() - start_time))
-            print('Search result:')
             data_list = []
+            result2
             for record in result1:
                 label_name = ", ".join(record['labels(n)'])
                 for k, v in record['n'].items():
-                    sentences = re.split(r'(?<=[.!?])\s+', v)
-                    result = []
-                    for sentence in sentences:
-                        if re.search(r"\bapple\b", sentence, re.IGNORECASE):
-                            cleaned_sentence = re.sub(r'[^\w\s]', '', sentence)
-                            result.append(cleaned_sentence)
-                            self.data.append(cleaned_sentence)
-                            data_list.append(
-                                [label_name, k, v, v.lower().count(keyword.lower())])
-            df = pd.DataFrame(data_list, columns=[
-                              'label', 'property', 'value', 'frequency'])
-            return df
+                    self.analyzer.analyze(label_name, k, v, keyword)
+        print(f"label: {label_name}")
+        print("Most common bigrams:")
+        for (bigram, field_name), count in self.analyzer.bigram_field_name_counts.most_common():
+            print((bigram, field_name, count))
+
+        print("\nBigram info:")
+        for bigram, _ in self.analyzer.bigram_info.items():
+            print(f"{bigram}:")
+
+        return self.analyzer.bigram_counts
 
 
 if __name__ == "__main__":

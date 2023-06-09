@@ -1,3 +1,3 @@
 class Visualizer():
-    def display():
+    def visualize():
         raise NotImplementedError("Please Implement this method")
