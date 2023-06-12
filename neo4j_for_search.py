@@ -4,11 +4,12 @@ from nltk_analyzer import NltkAnalyzer
 import json
 import time
 import os
+from graph_visualizer import GraphVisualizer
 
 
 class Neo4jForSearch(TextAnalyzer):
-    def __init__(self, uri, user, password):
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+    def __init__(self, uri, user, password, database):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password), database=database)
         self.data = []
         self.analyzer = NltkAnalyzer()
 
@@ -72,11 +73,13 @@ class Neo4jForSearch(TextAnalyzer):
 
         return self.analyzer.bigram_counts
 
+    def graph_visualize(self, keyword):
+        GraphVisualizer.graph_visualize(self, keyword)
 
 if __name__ == "__main__":
-    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "steven6409")
+    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "Ian173859", "yelp")
     # client.deleteAll()
     # client.loadYelpToNeo4j("yelp_academic_dataset_user.json")
     client.search_keyword("apple")
-    client.visualize("Word Cloud")
+    client.graph_visualize("apple")
     client.close()
