@@ -4,11 +4,12 @@ from nltk_analyzer import NltkAnalyzer
 import json
 import time
 import os
+from graph_visualizer import GraphVisualizer
 
 
-class Neo4jForSearch(FullTextSearch):
-    def __init__(self, uri, user, password):
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+class Neo4jForSearch(TextAnalyzer):
+    def __init__(self, uri, user, password, database):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password), database=database)
         self.data = []
         self.analyzer = NltkAnalyzer()
 
@@ -60,6 +61,9 @@ class Neo4jForSearch(FullTextSearch):
             for record in result1:
                 label_name = ", ".join(record['labels(n)'])
                 for k, v in record['n'].items():
+                    # if v's data type is not string, skip it
+                    if type(v) != str:
+                        continue
                     self.analyzer.analyze(label_name, k, v, keyword)
         print(f"label: {label_name}")
         print("Most common bigrams:")
@@ -72,11 +76,29 @@ class Neo4jForSearch(FullTextSearch):
 
         return self.analyzer.bigram_counts
 
+    def graph_visualize(self, keyword):
+        # Create a session to run Cypher statements in
+        session = self.driver.session()
+
+        # Write a Cypher statement
+        query = "MATCH (n1)-[r]->(n2) RETURN (n1), (r), (n2)"
+
+        # Run a Cypher statement
+        result = session.run(query)
+        data = []
+
+        # Extract the data from the result
+        for record in result:
+            data.append(record)
+
+        df = self.analyzer.analyze_for_graph(data, keyword)
+        print(df)
+        GraphVisualizer.graph_visualize(self, df)
 
 if __name__ == "__main__":
-    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "steven6409")
+    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "Ian173859", "yelp")
     # client.deleteAll()
     # client.loadYelpToNeo4j("yelp_academic_dataset_user.json")
-    client.search_keyword("apple")
-    client.visualize("Word Cloud")
+    # client.search_keyword("champion")
+    client.graph_visualize("apple")
     client.close()

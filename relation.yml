@@ -1,0 +1,62 @@
+yelp:
+  user:
+    primary_key: user_id
+    foreign_key: friends # array of user_id
+  business:
+    primary_key: business_id
+  review:
+    primary_key: review_id
+    foreign_key: 
+      - user_id
+      - business_id
+  checkin:
+    primary_key: id # auto increment
+    foreign_key: business_id
+  tip:
+    primary_key: id # auto increment
+    foreign_key: 
+      - user_id
+      - business_id
+
+
+cypher_query:
+  review:
+    by:
+      """
+      MATCH (u:User)
+      MATCH (re:Review {user_id: u.user_id})
+      MERGE (u)-[:WRITE]->(re)
+      """
+    to:
+      """
+      MATCH (b:Business)
+      MATCH(re:Review {business_id:b.business_id})
+      MERGE(re)-[:FOR]->(b);
+      """
+  tip:
+    by:
+      """
+      MATCH (u:User)
+      MATCH (t:Tip {user_id: u.user_id})
+      MERGE (u)-[:GIVE]->(t)
+      """
+    to:
+      """
+      MATCH (b:Business)
+      MATCH(t:Tip {business_id:b.business_id})
+      MERGE(t)-[:TO]->(b);
+      """
+  checkin:
+    by:
+      """
+      MATCH (b:Business)
+      MATCH (c:Checkin {business_id: b.business_id})
+      MERGE (b)-[:CHECKIN]->(c)
+      """
+  friend:
+    """
+    MATCH (u:User)
+    UNWIND u.friends AS friend_id
+    MATCH (f:User {user_id: friend_id})
+    MERGE (u)-[:FRIENDS_WITH]->(f);
+    """

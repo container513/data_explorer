@@ -4,7 +4,7 @@ from collections import defaultdict
 from nltk.tokenize import word_tokenize
 import string
 from collections import Counter
-
+import pandas as pd
 
 class NltkAnalyzer(TextAnalyzer):
     def __init__(self):
@@ -35,3 +35,21 @@ class NltkAnalyzer(TextAnalyzer):
                 self.bigram_counts[bigram_after] += 1
                 self.bigram_field_name_counts[(bigram_after, field_name)] += 1
                 self.collection_keyword_counts[collection_name] += 1
+        
+    def analyze_for_graph(self, data, keyword):
+        df = pd.DataFrame([], columns=["n1_label", "n1_properties","trigram", "r", "n2_labels", "n2_properties"])
+        for i in range(0, len(data)):
+            if keyword in str(data[i]["n1"]._properties):
+                text = str(data[i]["n1"]._properties)
+                text = text.translate(str.maketrans('', '', string.punctuation))
+                tokens = word_tokenize(text)
+                tokens = [token for token in tokens if token.lower()
+                    not in self.stop_words]
+                for j in range(len(tokens) - 1):
+                    if tokens[j].lower() == keyword:
+                        trigram = tokens[j - 1] + ' ' + tokens[j] + ' ' + tokens[j + 1]
+                        print(trigram)
+                        df = df.append({"n1_label": data[i]["n1"]._labels,"n1_properties": data[i]["n1"]._properties,"trigram": trigram, "r": data[i]["r"].type, "n2_label": data[i]["n2"]._labels, "n2_properties": data[i]["n2"]._properties}, ignore_index=True)
+            else:
+                pass
+        return df
