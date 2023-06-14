@@ -1,4 +1,4 @@
-from text_analyzer import TextAnalyzer
+from full_text_search import FullTextSearch
 from neo4j import GraphDatabase
 from nltk_analyzer import NltkAnalyzer
 import json
@@ -12,7 +12,6 @@ class Neo4jForSearch(TextAnalyzer):
         self.driver = GraphDatabase.driver(uri, auth=(user, password), database=database)
         self.data = []
         self.analyzer = NltkAnalyzer()
-        # self.stop_words = set(stopwords.words('english'))
 
     def close(self):
         self.driver.close()
