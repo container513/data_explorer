@@ -101,5 +101,5 @@ if __name__ == "__main__":
     # client.deleteAll()
     # client.loadYelpToNeo4j("yelp_academic_dataset_user.json")
     # client.search_keyword("champion")
-    client.graph_visualize("champion")
+    client.graph_visualize("apple")
     client.close()
