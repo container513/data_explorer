@@ -87,3 +87,6 @@ class MysqlForSearch(FullTextSearch):
         
         db_cursor.close()
         return self.analyzer.bigram_counts
+
+    def close(self):
+        self.driver.close()

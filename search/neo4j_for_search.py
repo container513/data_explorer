@@ -70,9 +70,9 @@ class Neo4jForSearch(FullTextSearch):
         for (bigram, field_name), count in self.analyzer.bigram_field_name_counts.most_common():
             print((bigram, field_name, count))
 
-        print("\nBigram info:")
-        for bigram, _ in self.analyzer.bigram_info.items():
-            print(f"{bigram}:")
+        # print("\nBigram info:")
+        # for bigram, _ in self.analyzer.bigram_info.items():
+        #     print(f"{bigram}:")
 
         return self.analyzer.bigram_counts
 
@@ -96,7 +96,7 @@ class Neo4jForSearch(FullTextSearch):
         GraphVisualizer.graph_visualize(self, df)
 
 if __name__ == "__main__":
-    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "Ian173859", "yelp")
+    client = Neo4jForSearch("bolt://localhost:7687", "neo4j", "steven6409", "neo4j")
     # client.deleteAll()
     # client.loadYelpToNeo4j("yelp_academic_dataset_user.json")
     # client.search_keyword("champion")

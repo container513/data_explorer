@@ -1,5 +1,7 @@
 from search.full_text_search import FullTextSearch
+from visualizer.historgram_visualizer import HistorgramVisualizer
 from visualizer.visualizer import Visualizer
+from visualizer.word_cloud_visualizer import WordCloudVisualizer
 
 
 class DataExplorer():
@@ -11,5 +13,9 @@ class DataExplorer():
     def search_keyword(self, keyword: str):
         self.data = self.full_text_search.search_keyword(keyword)
 
-    def visualize(self, visualizer: Visualizer):
+    def visualize(self, type: str):
+        if type == 'histogram':
+            visualizer = HistorgramVisualizer()
+        elif type == 'wordcloud':
+            visualizer = WordCloudVisualizer()
         visualizer.visualize(self.data)
