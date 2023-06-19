@@ -1,5 +1,5 @@
-from full_text_search import FullTextSearch
-from nltk_analyzer import NltkAnalyzer
+from search.full_text_search import FullTextSearch
+from analyzer.nltk_analyzer import NltkAnalyzer
 import mysql.connector
 import json
 

@@ -1,13 +1,13 @@
-from full_text_search import FullTextSearch
+from search.full_text_search import FullTextSearch
 from neo4j import GraphDatabase
-from nltk_analyzer import NltkAnalyzer
+from analyzer.nltk_analyzer import NltkAnalyzer
 import json
 import time
 import os
-from graph_visualizer import GraphVisualizer
+from visualizer.graph_visualizer import GraphVisualizer
 
 
-class Neo4jForSearch(TextAnalyzer):
+class Neo4jForSearch(FullTextSearch):
     def __init__(self, uri, user, password, database):
         self.driver = GraphDatabase.driver(uri, auth=(user, password), database=database)
         self.data = []

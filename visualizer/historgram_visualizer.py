@@ -1,4 +1,4 @@
-from visualizer import Visualizer
+from visualizer.visualizer import Visualizer
 import matplotlib.pyplot as plt
 
 

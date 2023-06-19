@@ -1,5 +1,5 @@
 from nltk.corpus import stopwords
-from text_analyzer import TextAnalyzer
+from analyzer.text_analyzer import TextAnalyzer
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 import string

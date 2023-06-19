@@ -1,5 +1,5 @@
-from full_text_search import FullTextSearch
-from visualizer import Visualizer
+from search.full_text_search import FullTextSearch
+from visualizer.visualizer import Visualizer
 
 
 class DataExplorer():

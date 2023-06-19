@@ -1,4 +1,4 @@
-from full_text_search import FullTextSearch
+from search.full_text_search import FullTextSearch
 
 
 class MongoDBForSearch(FullTextSearch):
